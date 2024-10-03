@@ -1,0 +1,87 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #e0f7fa;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #d1c4e9;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #4caf50;
+}
+
+.sidebar button {
+    margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+    background-color: #7e57c2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.sidebar button:hover {
+    background-color: #6a1b9a;
+}
+
+.main {
+    flex: 1;
+    padding: 20px;
+    background-color: #b2ebf2;
+}
+
+.section {
+    display: none;
+    margin-bottom: 40px;
+}
+
+.section h2 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.section ul {
+    list-style: none;
+    margin-bottom: 20px;
+}
+
+.section input {
+    padding: 10px;
+    width: 200px;
+    margin-right: 10px;
+}
+
+.section button {
+    padding: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.section button:hover {
+    background-color: #388e3c;
+}
+
+/* Default visibility for Today Section */
+#todaySection {
+    display: block;
+}
+
