@@ -4,40 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To Do List</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
     <div class="sidebar">
         <h1>To Do</h1>
-        <button onclick="showToday()">Today</button>
-        <button onclick="showMust()">Must</button>
-        <button onclick="showWish()">Wish</button>
+        <textarea id="taskInput" placeholder="Add tasks (one per line)"></textarea>
+        <input type="datetime-local" id="dueDate" /> <!-- 日付と時間を選択できる -->
+        <button onclick="addTasks()">Add Tasks</button>
+        <button onclick="deleteCompletedTasks()">Delete Completed Tasks</button>
     </div>
 
-    <div class="main">
-        <div class="section" id="todaySection">
-            <h2>Today</h2>
-            <ul id="todayList"></ul>
-            <input type="text" id="todayInput" placeholder="Add task">
-            <button onclick="addTask('today')">Add</button>
+    <div class="matrix">
+        <div class="quadrant" id="urgent-important" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2>Urgent & Important</h2>
+            <div class="tasks"></div>
         </div>
-
-        <div class="section" id="mustSection">
-            <h2>Must</h2>
-            <ul id="mustList"></ul>
-            <input type="text" id="mustInput" placeholder="Add task">
-            <button onclick="addTask('must')">Add</button>
+        <div class="quadrant" id="not-urgent-important" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2>Not Urgent but Important</h2>
+            <div class="tasks"></div>
         </div>
-
-        <div class="section" id="wishSection">
-            <h2>Wish</h2>
-            <ul id="wishList"></ul>
-            <input type="text" id="wishInput" placeholder="Add task">
-            <button onclick="addTask('wish')">Add</button>
+        <div class="quadrant" id="urgent-not-important" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2>Urgent but Not Important</h2>
+            <div class="tasks"></div>
+        </div>
+        <div class="quadrant" id="not-urgent-not-important" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2>Not Urgent & Not Important</h2>
+            <div class="tasks"></div>
         </div>
     </div>
-
+    
     <script src="script.js"></script>
 </body>
 </html>

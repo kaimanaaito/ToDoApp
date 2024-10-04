@@ -26,6 +26,10 @@ body {
     color: #4caf50;
 }
 
+.sidebar textarea, .sidebar input[type="date"] {
+    width: 100%;
+}
+
 .sidebar button {
     margin: 10px 0;
     padding: 10px;
@@ -41,47 +45,55 @@ body {
     background-color: #6a1b9a;
 }
 
-.main {
-    flex: 1;
+.matrix {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 80%;
+    margin: 20px 0;
+}
+
+.quadrant {
+    border: 2px solid #ccc;
     padding: 20px;
-    background-color: #b2ebf2;
+    background-color: #f1f8e9;
+    text-align: center;
+    position: relative;
 }
 
-.section {
-    display: none;
-    margin-bottom: 40px;
+.tasks {
+    margin-top: 10px;
 }
 
-.section h2 {
-    font-size: 22px;
-    margin-bottom: 10px;
-}
-
-.section ul {
-    list-style: none;
-    margin-bottom: 20px;
-}
-
-.section input {
+.task {
     padding: 10px;
-    width: 200px;
-    margin-right: 10px;
+    background-color: #ffcc80;
+    cursor: grab;
+    border: 1px solid #888;
+    border-radius: 5px;
+    text-align: center;
+    margin: 5px 0;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.section button {
-    padding: 10px;
-    background-color: #4caf50;
-    color: white;
+.task:hover {
+    background-color: #ffe0b2;
+}
+
+.delete-button {
+    background-color: #ff5252;
     border: none;
+    color: white;
     cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 14px;
 }
 
-.section button:hover {
-    background-color: #388e3c;
-}
-
-/* Default visibility for Today Section */
-#todaySection {
-    display: block;
+.delete-button:hover {
+    background-color: #d50000;
 }
 
