@@ -2,47 +2,56 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Verdana', sans-serif; /* 柔らかい印象のフォントに変更 */
 }
 
 body {
     display: flex;
     min-height: 100vh;
-    background-color: #e0f7fa;
+    background-color: #f2ebd6; /* クリーム色 */
 }
 
 .sidebar {
-    width: 200px;
-    background-color: #d1c4e9;
+    width: 220px;
+    background-color: #decc9d; /* 薄いカーキ */
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 優しい影 */
+    border-radius: 12px; /* 角を丸める */
 }
 
 .sidebar h1 {
     font-size: 24px;
     margin-bottom: 20px;
-    color: #4caf50;
+    color: #885827; /* ダークブラウン */
+    text-align: center; /* センター揃え */
 }
 
 .sidebar textarea, .sidebar input[type="date"] {
     width: 100%;
+    border: 1px solid #885827; /* ダークブラウン */
+    padding: 10px;
+    border-radius: 8px; /* 角を丸める */
+    background-color: #ffffff; /* 白色 */
 }
 
 .sidebar button {
     margin: 10px 0;
-    padding: 10px;
+    padding: 12px;
     width: 100%;
-    background-color: #7e57c2;
-    color: white;
+    background-color: #885827; /* ダークブラウン */
+    color: #ffffff; /* 白 */
     border: none;
+    border-radius: 8px; /* 丸みを持たせる */
     cursor: pointer;
     font-size: 16px;
+    transition: background-color 0.3s;
 }
 
 .sidebar button:hover {
-    background-color: #6a1b9a;
+    background-color: #6f4c26; /* ホバー時の濃い茶色 */
 }
 
 .matrix {
@@ -54,11 +63,13 @@ body {
 }
 
 .quadrant {
-    border: 2px solid #ccc;
+    border: 2px solid #ccc; /* 薄いグレー */
     padding: 20px;
-    background-color: #f1f8e9;
+    background-color: #ffffff; /* 白色 */
     text-align: center;
     position: relative;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* 優しい影 */
+    border-radius: 12px; /* 角を丸める */
 }
 
 .tasks {
@@ -67,10 +78,10 @@ body {
 
 .task {
     padding: 10px;
-    background-color: #ffcc80;
+    background-color: #f0e5d8; /* 薄いベージュ */
     cursor: grab;
-    border: 1px solid #888;
-    border-radius: 5px;
+    border: 1px solid #885827; /* ダークブラウン */
+    border-radius: 8px; /* 丸みを持たせる */
     text-align: center;
     margin: 5px 0;
     transition: background-color 0.3s;
@@ -80,20 +91,44 @@ body {
 }
 
 .task:hover {
-    background-color: #ffe0b2;
+    background-color: #e3d7c2; /* ホバー時の薄い茶色 */
 }
 
 .delete-button {
-    background-color: #ff5252;
+    background-color: #ff5252; /* レッド */
     border: none;
     color: white;
     cursor: pointer;
     padding: 5px;
-    border-radius: 5px;
+    border-radius: 8px; /* 丸みを持たせる */
     font-size: 14px;
 }
 
 .delete-button:hover {
-    background-color: #d50000;
+    background-color: #d50000; /* ダークレッド */
+}
+
+.progress-bar {
+    height: 5px;
+    background-color: #885827; /* ダークブラウン */
+    transition: width 0.3s; /* アニメーションを追加 */
+}
+
+#progressContainer {
+    margin-top: 20px;
+}
+
+progress {
+    width: 100%;
+    height: 20px;
+}
+
+#progressContainer {
+    margin: 20px 0; /* 上下にスペースを追加 */
+}
+
+#progressBar {
+    width: 100%; /* 幅を100%に */
+    height: 20px; /* 高さを調整 */
 }
 
