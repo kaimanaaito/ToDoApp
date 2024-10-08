@@ -3,194 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To Do List</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Task Manager</title>
     <style>
-        /* タスク名の幅を200pxに設定 */
-        .task input[type="text"] {
-            width: 200px; /* 幅を200pxに設定 */
-            padding: 5px; /* 内側の余白を追加 */
-            margin-right: 10px; /* 隣の要素との間隔を追加 */
-        }
-        
-        /* 傍線を追加するためのスタイル */
-        .task.completed input[type="text"] {
-            text-decoration: line-through; /* 傍線を追加 */
-            color: gray; /* テキスト色をグレーに変更 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Verdana', sans-serif;
         }
 
-        /* 他のスタイル */
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f2ebd6;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: #decc9d;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            margin-right: 20px;
+        }
+
+        .sidebar input, .sidebar button, .sidebar select {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #885827;
+            border-radius: 8px;
+            width: calc(100% - 22px); /* Adjusting for padding and border */
+        }
+
+        .sidebar button {
+            background-color: #885827;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar button:hover {
+            background-color: #6f4c26;
+        }
+
+        .task-area {
+            flex: 1;
+        }
+
+        .matrix {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .quadrant {
+            border: 2px solid #ccc;
+            padding: 20px;
+            background-color: #ffffff;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tasks {
+            margin-top: 10px;
+        }
+
         .task {
-            display: flex; /* 横並びにするためにフレックスボックスを使用 */
-            align-items: center; /* 垂直方向に中央揃え */
-            margin-bottom: 10px; /* タスク間の間隔を追加 */
+            padding: 10px;
+            background-color: #f0e5d8;
+            cursor: grab;
+            border: 1px solid #885827;
+            border-radius: 8px;
+            text-align: left;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .progress-bar {
-            height: 5px; /* プログレスバーの高さ */
-            background-color: green; /* プログレスバーの色 */
-            margin-left: 10px; /* タスクとの間に余白を追加 */
+        .task:hover {
+            background-color: #e3d7c2;
+        }
+
+        .delete-button {
+            background-color: #ff5252;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .delete-button:hover {
+            background-color: #d50000;
+        }
+
+        progress {
+            width: 100%;
+            height: 20px;
+            margin: 10px 0;
+        }
+
+        .overdue {
+            background-color: #ffcccc; /* Light red for overdue tasks */
         }
     </style>
 </head>
 <body>
 
+<div class="container">
     <div class="sidebar">
-        <h1>To Do</h1>
-        <textarea id="taskInput" placeholder="Add tasks (one per line)"></textarea>
-        <input type="datetime-local" id="dueDate" /> <!-- 日付と時間を選択できる -->
-        <button onclick="addTasks()">Add Tasks</button>
-        <button onclick="deleteCompletedTasks()">Delete Completed Tasks</button>
+        <h3>Add Task</h3>
+        <input type="text" id="taskInput" placeholder="Enter your task">
+        <input type="datetime-local" id="dueDate">
+        <select id="importance">
+            <option value="urgent-important">Urgent & Important</option>
+            <option value="not-urgent-important">Not Urgent & Important</option>
+            <option value="urgent-not-important">Urgent & not important for life</option>
+            <option value="not-urgent-not-important">What you want to do someday</option>
+        </select>
+        <button onclick="addTasks()">Add Task</button>
     </div>
 
-    <div class="matrix">
-        <div class="quadrant" id="urgent-important" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h2>Your Mission</h2>
-            <div class="tasks" id="tasks-urgent-important">
-                <div class="task" draggable="true" ondragstart="event.dataTransfer.setData('text', this.id)" id="task-1">
-                    <input type="text" value="Submit Project Report" onchange="updateTask('task-1', this.value)">
-                    <input type="datetime-local" value="2024-10-05T12:00" onchange="updateDueDate('task-1', this.value)">
-                    <input type="checkbox" onchange="markAsCompleted(this, this.parentElement.querySelector('.progress-bar'))">
-                    <button onclick="deleteTask('task-1')">Delete</button>
-                    <div class="progress-bar" style="width: 0%;"></div>
+    <div class="task-area">
+        <h3>Progress</h3>
+        <progress id="progressBar" value="0" max="100"></progress>
+        <span id="progressText">0%</span>
+
+        <h3>To Do List</h3>
+        <div class="matrix">
+            <div class="quadrant" id="urgent-important" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h4>Your Mission</h4>
+                <div class="tasks" id="tasks-urgent-important">
+                    <div class="task" draggable="true" ondragstart="event.dataTransfer.setData('text', this.id)" id="default-urgent-important">
+                        <input type="text" value="Complete your project proposal" onchange="updateTaskText('default-urgent-important', this.value)">
+                        <input type="datetime-local" value="2024-10-10T09:00" onchange="updateDueDate('due-default-urgent-important', this.value)">
+                        <input type="checkbox" onchange="markAsCompleted(this)">
+                        <button class="delete-button" onclick="deleteTask('default-urgent-important')">Delete</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="quadrant" id="not-urgent-important" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h2>Self-Investment</h2>
-            <div class="tasks" id="tasks-not-urgent-important">
-                <div class="task" draggable="true" ondragstart="event.dataTransfer.setData('text', this.id)" id="task-2">
-                    <input type="text" value="Read 'Thinking, Fast and Slow'" onchange="updateTask('task-2', this.value)">
-                    <input type="datetime-local" value="2024-10-15T12:00" onchange="updateDueDate('task-2', this.value)">
-                    <input type="checkbox" onchange="markAsCompleted(this, this.parentElement.querySelector('.progress-bar'))">
-                    <button onclick="deleteTask('task-2')">Delete</button>
-                    <div class="progress-bar" style="width: 0%;"></div>
+            <div class="quadrant" id="not-urgent-important" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h4>Self Investment</h4>
+                <div class="tasks" id="tasks-not-urgent-important">
+                    <div class="task" draggable="true" ondragstart="event.dataTransfer.setData('text', this.id)" id="default-not-urgent-important">
+                        <input type="text" value="Read a book for personal growth" onchange="updateTaskText('default-not-urgent-important', this.value)">
+                        <input type="datetime-local" value="2024-10-15T10:00" onchange="updateDueDate('due-default-not-urgent-important', this.value)">
+                        <input type="checkbox" onchange="markAsCompleted(this)">
+                        <button class="delete-button" onclick="deleteTask('default-not-urgent-important')">Delete</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="quadrant" id="urgent-not-important" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h2>Time-Sensitive Tasks</h2>
-            <div class="tasks" id="tasks-urgent-not-important">
-                <div class="task" draggable="true" ondragstart="event.dataTransfer.setData('text', this.id)" id="task-3">
-                    <input type="text" value="Buy groceries for dinner" onchange="updateTask('task-3', this.value)">
-                    <input type="datetime-local" value="2024-10-04T18:00" onchange="updateDueDate('task-3', this.value)">
-                    <input type="checkbox" onchange="markAsCompleted(this, this.parentElement.querySelector('.progress-bar'))">
-                    <button onclick="deleteTask('task-3')">Delete</button>
-                    <div class="progress-bar" style="width: 0%;"></div>
+            <div class="quadrant" id="urgent-not-important" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h4>Everyone’s Request</h4>
+                <div class="tasks" id="tasks-urgent-not-important">
+                    <div class="task" draggable="true" ondragstart="event.dataTransfer.setData('text', this.id)" id="default-urgent-not-important">
+                        <input type="text" value="Respond to emails" onchange="updateTaskText('default-urgent-not-important', this.value)">
+                        <input type="datetime-local" value="2024-10-12T11:00" onchange="updateDueDate('due-default-urgent-not-important', this.value)">
+                        <input type="checkbox" onchange="markAsCompleted(this)">
+                        <button class="delete-button" onclick="deleteTask('default-urgent-not-important')">Delete</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="quadrant" id="not-urgent-not-important" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h2>Wish List</h2>
-            <div class="tasks" id="tasks-not-urgent-not-important">
-                <div class="task" draggable="true" ondragstart="event.dataTransfer.setData('text', this.id)" id="task-4">
-                    <input type="text" value="Watch a new movie" onchange="updateTask('task-4', this.value)">
-                    <input type="datetime-local" value="2024-10-20T20:00" onchange="updateDueDate('task-4', this.value)">
-                    <input type="checkbox" onchange="markAsCompleted(this, this.parentElement.querySelector('.progress-bar'))">
-                    <button onclick="deleteTask('task-4')">Delete</button>
-                    <div class="progress-bar" style="width: 0%;"></div>
+            <div class="quadrant" id="not-urgent-not-important" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h4>Free Time</h4>
+                <div class="tasks" id="tasks-not-urgent-not-important">
+                    <div class="task" draggable="true" ondragstart="event.dataTransfer.setData('text', this.id)" id="default-not-urgent-not-important">
+                        <input type="text" value="Watch a movie" onchange="updateTaskText('default-not-urgent-not-important', this.value)">
+                        <input type="datetime-local" value="2024-10-20T18:00" onchange="updateDueDate('due-default-not-urgent-not-important', this.value)">
+                        <input type="checkbox" onchange="markAsCompleted(this)">
+                        <button class="delete-button" onclick="deleteTask('default-not-urgent-not-important')">Delete</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        function addTasks() {
-            const taskInput = document.getElementById("taskInput").value;
-            const dueDate = document.getElementById("dueDate").value;
+<script>
+    let taskIdCounter = 1; // To keep track of the number of tasks
 
-            if (taskInput.trim() === "") {
-                alert("Please enter a task.");
-                return;
-            }
+    function addTasks() {
+        const taskInput = document.getElementById("taskInput").value;
+        const dueDate = document.getElementById("dueDate").value;
+        const importance = document.getElementById("importance").value;
 
-            const taskId = `task-${Date.now()}`; // ユニークなIDを生成
-            const taskElement = document.createElement("div");
-            taskElement.id = taskId;
-            taskElement.className = "task";
-            taskElement.draggable = true; // ドラッグ可能にする
-            taskElement.ondragstart = (event) => event.dataTransfer.setData("text", taskId);
-
-            // 進捗バーを初期化
-            const progressBar = document.createElement("div");
-            progressBar.className = "progress-bar";
-            progressBar.style.width = "0%"; // 初期値は0%
-
-            taskElement.innerHTML = `
-                <input type="text" value="${taskInput}" onchange="updateTask('${taskId}', this.value)">
-                <input type="datetime-local" value="${dueDate}" onchange="updateDueDate('${taskId}', this.value)">
-                <input type="checkbox" onchange="markAsCompleted(this, progressBar)">
-                <button onclick="deleteTask('${taskId}')">Delete</button>
-            `;
-
-            taskElement.appendChild(progressBar); // 進捗バーをタスク要素に追加
-
-            // 各クワドラントにタスクを追加
-            document.querySelector("#urgent-important .tasks").appendChild(taskElement);
-            document.getElementById("taskInput").value = ""; // 入力欄をクリア
-            document.getElementById("dueDate").value = ""; // 日付入力欄をクリア
+        if (!taskInput) {
+            alert("Please enter a task.");
+            return;
         }
 
-        function markAsCompleted(checkbox, progressBar) {
-            const taskElement = checkbox.parentElement;
-            if (checkbox.checked) {
-                progressBar.style.width = "100%"; // 完了時は進捗バーを100%に
-                taskElement.classList.add("completed"); // 完了クラスを追加
-            } else {
-                progressBar.style.width = "0%"; // 未完了時は進捗バーを0%に
-                taskElement.classList.remove("completed"); // 完了クラスを削除
-            }
-        }
+        const quadrantMap = {
+            "urgent-important": "tasks-urgent-important",
+            "not-urgent-important": "tasks-not-urgent-important",
+            "urgent-not-important": "tasks-urgent-not-important",
+            "not-urgent-not-important": "tasks-not-urgent-not-important"
+        };
 
-        function deleteTask(taskId) {
-            const taskElement = document.getElementById(taskId);
-            if (taskElement) {
-                taskElement.remove(); // タスク要素を削除
-            }
-        }
+        const newTaskId = "task-" + taskIdCounter++;
+        const tasksContainer = document.getElementById(quadrantMap[importance]);
 
-        function deleteCompletedTasks() {
-            const tasks = document.querySelectorAll('.task');
-            tasks.forEach(task => {
-                const checkbox = task.querySelector('input[type="checkbox"]');
-                if (checkbox && checkbox.checked) {
-                    task.remove(); // チェックされたタスクを削除
-                }
-            });
-        }
+        const taskHTML = `
+            <div class="task" id="${newTaskId}" draggable="true" ondragstart="event.dataTransfer.setData('text', this.id)">
+                <input type="text" value="${taskInput}" onchange="updateTaskText('${newTaskId}', this.value)">
+                <input type="datetime-local" value="${dueDate}" onchange="updateDueDate('due-${newTaskId}', this.value)">
+                <input type="checkbox" onchange="markAsCompleted(this)">
+                <button class="delete-button" onclick="deleteTask('${newTaskId}')">Delete</button>
+            </div>
+        `;
+        tasksContainer.insertAdjacentHTML("beforeend", taskHTML);
+        document.getElementById("taskInput").value = '';
+        document.getElementById("dueDate").value = '';
+        updateProgress(); // Update progress after adding a new task
+    }
 
-        function updateTask(taskId, newValue) {
-            const taskElement = document.getElementById(taskId);
-            if (taskElement) {
-                const inputField = taskElement.querySelector('input[type="text"]');
-                inputField.value = newValue;
-            }
-        }
+    function updateTaskText(taskId, newValue) {
+        const taskInput = document.getElementById(taskId).querySelector('input[type="text"]');
+        taskInput.value = newValue;
+    }
 
-        function updateDueDate(taskId, newDate) {
-            const taskElement = document.getElementById(taskId);
-            if (taskElement) {
-                const dateField = taskElement.querySelector('input[type="datetime-local"]');
-                dateField.value = newDate;
-            }
-        }
+    function updateDueDate(dueId, newValue) {
+        const dueInput = document.getElementById(dueId);
+        dueInput.value = newValue;
+    }
 
-        function allowDrop(event) {
-            event.preventDefault();
+    function markAsCompleted(checkbox) {
+        const task = checkbox.parentElement;
+        if (checkbox.checked) {
+            task.style.textDecoration = "line-through";
+        } else {
+            task.style.textDecoration = "none";
         }
+        updateProgress(); // Update progress whenever a task is marked as completed
+    }
 
-        function drop(event) {
-            event.preventDefault(); 
-            const taskId = event.dataTransfer.getData("text");
-            const taskElement = document.getElementById(taskId);
-            const dropzone = event.target.closest(".tasks");
-            if (dropzone) {
-                dropzone.appendChild(taskElement); 
-            }
+    function deleteTask(taskId) {
+        const task = document.getElementById(taskId);
+        task.parentElement.removeChild(task);
+        updateProgress(); // Update progress after deleting a task
+    }
+
+    function updateProgress() {
+        const allTasks = document.querySelectorAll(".task");
+        const totalTasks = allTasks.length;
+        const completedTasks = Array.from(allTasks).filter(task => task.querySelector('input[type="checkbox"]').checked).length;
+        const progressPercentage = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+
+        const progressBar = document.getElementById("progressBar");
+        const progressText = document.getElementById("progressText");
+        progressBar.value = progressPercentage;
+        progressText.textContent = `${progressPercentage}%`;
+    }
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drop(event) {
+        event.preventDefault();
+        const taskId = event.dataTransfer.getData("text");
+        const task = document.getElementById(taskId);
+        const quadrantId = event.target.id;
+
+        if (task && quadrantId.startsWith("tasks-")) {
+            document.getElementById(quadrantId).appendChild(task);
         }
-    </script>
-    
-    
-    
+    }
+</script>
+
 </body>
 </html>
+
+
+
+
